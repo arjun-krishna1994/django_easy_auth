@@ -11,7 +11,7 @@ class UserJWToken(models.Model):
 
 class TokenVersionForUser(models.Model):
     user = models.OneToOneField(AUTH_USER_MODEL)
-    version = models.IntegerField(default=0)
+    version = models.IntegerField(default=1)
 
 
 class ResetPasswordToken(models.Model):
