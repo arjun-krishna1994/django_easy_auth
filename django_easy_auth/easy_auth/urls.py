@@ -9,4 +9,5 @@ urlpatterns = [
     url(r'^password-reset-token/', views.password_reset_token),
     url(r'^change-password/', views.change_password),
     url(r'^invalidate-all-tokens/', views.invalidate_all_tokens),
+    url(r'^api-facebook-auth/', views.facebook_auth),
 ]

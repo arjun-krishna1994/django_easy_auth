@@ -24,7 +24,7 @@ def get_value_or_404(dict_, key):
         raise Http404(str(e))
 
 
-def get_user_from_login_field(login_field):
+def get_user_from_login_field(login_field, raise_error=True):
     from django.conf import settings
     from django.contrib.auth.models import User
     user = None
@@ -38,7 +38,10 @@ def get_user_from_login_field(login_field):
         pass
     if user is not None:
         return user
-    raise UserDoesNotExistForLoginField("User does not exist for {login_field}".format(login_field=login_field))
+    if raise_error:
+        raise UserDoesNotExistForLoginField("User does not exist for {login_field}".format(login_field=login_field))
+    else:
+        return None
 
 
 def get_username_for_user(user):
@@ -85,6 +88,11 @@ def verify_reset_token(token):
 def invalidate_all_tokens():
     from django.db.models import F
     models.TokenVersionForUser.objects.all().update(version = F('version') + 1)
+
+
+def create_user(username, email, first_name="", last_name=""):
+    from django.contrib.auth.models import User
+    return User.objects.create(username=username, email=email, first_name=first_name, last_name=last_name)
 
 
 

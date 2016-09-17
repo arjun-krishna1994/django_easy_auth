@@ -4,11 +4,13 @@ from rest_framework import status
 from django.contrib.auth import authenticate, login
 from rest_framework.response import Response
 from django.conf import settings
+import urllib2, json, random
 from .utils import get_value_or_404
-import utils
+import utils, models
 from .import jwt_utils
 from rest_framework_jwt.views import JSONWebTokenAPIView
 from .serializers import RefreshJWTSerializer, VerifyJWTSerializer
+from django.contrib.auth.models import User
 
 
 #TODO: Convert this function into a class based view
@@ -78,12 +80,30 @@ def invalidate_all_tokens(request):
     return Response({"message": "All tokens successfully invalidated"}, status=status.HTTP_200_OK)
 
 
-def facebook_login(request):
-    pass
+@api_view(["POST"])
+def facebook_auth(request):
+    access_token = get_value_or_404(request.data, 'access_token')
+    file_ = urllib2.urlopen("https://graph.facebook.com/me?access_token="+access_token+'&fields=email,first_name,last_name')
+    ret = json.loads(file_.read())
+    uid = ret['id']
+    signup = False
+    try:
+        row = models.UserSocialAccount.objects.get(uid=uid, provider="fb")
+        user = row.user
+    except models.UserSocialAccount.DoesNotExist:
+        email = ret["email"]
+        user = utils.get_user_from_login_field(email, raise_error=False)
+        if not user:
+            username = ret["first_name"].replace(" ", "").lower() + str(random.randint(0, 10000000000000000))
+            first_name = ret["first_name"]
+            last_name = ret["last_name"]
+            user = utils.create_user(username, email, first_name, last_name)
+            signup = True
+        row = models.UserSocialAccount.objects.create(uid=uid, user=user, extra_data=json.dumps(ret))
+    token = jwt_utils.get_jwt_for_user(user)
+    return Response({"token": token, "sign_up": signup}, status=status.HTTP_200_OK)
 
 
-def google_login(request):
-    pass
 
 refresh_jwt_token = RefreshTokenAPIView.as_view()
 verify_jwt_token = VerifyTokenAPIView.as_view()
