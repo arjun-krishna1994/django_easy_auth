@@ -1,5 +1,6 @@
 from rest_framework.views import APIView
-from rest_framework.decorators import api_view
+from rest_framework.decorators import api_view, authentication_classes, permission_classes
+from rest_framework.permissions import IsAuthenticated
 from rest_framework import status
 from django.contrib.auth import authenticate, login
 from rest_framework.response import Response
@@ -10,7 +11,6 @@ import utils, models
 from .import jwt_utils
 from rest_framework_jwt.views import JSONWebTokenAPIView
 from .serializers import RefreshJWTSerializer, VerifyJWTSerializer
-from django.contrib.auth.models import User
 
 
 #TODO: Convert this function into a class based view
@@ -37,6 +37,8 @@ class VerifyTokenAPIView(JSONWebTokenAPIView):
 
 
 @api_view(["POST"])
+@authentication_classes([jwt_utils.JWTAuthentication])
+@permission_classes([IsAuthenticated])
 def change_password(request):
     old_password = get_value_or_404(request.data, 'old_password')
     new_password1 = get_value_or_404(request.data, 'new_password1')
@@ -99,7 +101,7 @@ def facebook_auth(request):
             last_name = ret["last_name"]
             user = utils.create_user(username, email, first_name, last_name)
             signup = True
-        row = models.UserSocialAccount.objects.create(uid=uid, user=user, extra_data=json.dumps(ret))
+        row = models.UserSocialAccount.objects.create(uid=uid, user=user, extra_data=json.dumps(ret), provider="fb")
     token = jwt_utils.get_jwt_for_user(user)
     return Response({"token": token, "sign_up": signup}, status=status.HTTP_200_OK)
 

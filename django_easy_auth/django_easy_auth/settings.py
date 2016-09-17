@@ -119,8 +119,12 @@ USE_TZ = True
 
 STATIC_URL = '/static/'
 
+import datetime
 EASY_AUTH_AUTHENTICATE_TO_DJANGO_SESSIONS = False
 EASY_AUTH_JWT_HEADER = 'HTTP_JWTOKEN'
 JWT_AUTH = {
-    'JWT_PAYLOAD_HANDLER': 'easy_auth.jwt_utils.jwt_payload_handler'
+    'JWT_PAYLOAD_HANDLER': 'easy_auth.jwt_utils.custom_jwt_payload_handler',
+    'JWT_ALLOW_REFRESH': True,
+    'JWT_EXPIRATION_DELTA': datetime.timedelta(days=1),
+    'JWT_LEEWAY': 600,
 }

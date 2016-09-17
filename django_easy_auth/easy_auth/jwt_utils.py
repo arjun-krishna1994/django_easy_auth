@@ -1,7 +1,6 @@
 from rest_framework_jwt.settings import api_settings as jwt_api_settings
 from django.conf import settings
 import models
-User = getattr(settings, "AUTH_USER_MODEL", "auth.User")
 jwt_decode_handler = jwt_api_settings.JWT_DECODE_HANDLER
 jwt_get_username_from_payload = jwt_api_settings.JWT_PAYLOAD_GET_USERNAME_HANDLER
 jwt_encode_handler = jwt_api_settings.JWT_ENCODE_HANDLER
@@ -11,6 +10,7 @@ from rest_framework_jwt.compat import get_username, get_username_field
 import warnings
 from calendar import timegm
 from datetime import datetime
+from django.contrib.auth.models import User
 
 
 def custom_jwt_payload_handler(user):
