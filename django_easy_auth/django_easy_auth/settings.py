@@ -44,7 +44,6 @@ MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
-    'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
@@ -121,3 +120,7 @@ USE_TZ = True
 STATIC_URL = '/static/'
 
 EASY_AUTH_AUTHENTICATE_TO_DJANGO_SESSIONS = True
+EASY_AUTH_JWT_HEADER = 'HTTP_JWTOKEN'
+JWT_AUTH = {
+    'JWT_PAYLOAD_HANDLER': 'easy_auth.jwt_utils.jwt_payload_handler'
+}

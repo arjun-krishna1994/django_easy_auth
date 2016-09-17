@@ -7,3 +7,14 @@ class UserJWToken(models.Model):
     created = models.DateTimeField(auto_created=True, auto_now_add=True)
     user = models.ForeignKey(AUTH_USER_MODEL)
     token = models.TextField()
+
+
+class TokenVersionForUser(models.Model):
+    user = models.OneToOneField(AUTH_USER_MODEL)
+    version = models.IntegerField(default=0)
+
+
+class ResetPasswordToken(models.Model):
+    user = models.ForeignKey(AUTH_USER_MODEL)
+    token = models.TextField(unique=True)
+    expires_at = models.DateTimeField()
