@@ -1,0 +1,4 @@
+Django==1.10.1
+djangorestframework==3.4.6
+djangorestframework-jwt==1.7.2
+PyJWT==1.4.0
