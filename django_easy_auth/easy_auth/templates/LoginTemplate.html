@@ -108,18 +108,13 @@
             display:none;
         }
 .btn {
-  background: #73ff00;
-  background-image: -webkit-linear-gradient(top, #73ff00, #a9bd71);
-  background-image: -moz-linear-gradient(top, #73ff00, #a9bd71);
-  background-image: -ms-linear-gradient(top, #73ff00, #a9bd71);
-  background-image: -o-linear-gradient(top, #73ff00, #a9bd71);
-  background-image: linear-gradient(to bottom, #73ff00, #a9bd71);
   -webkit-border-radius: 28;
   -moz-border-radius: 28;
   border-radius: 28px;
   font-family: Arial;
   color: #ffffff;
   font-size: 20px;
+  background: #7ed934;
   padding: 10px 20px 10px 20px;
   text-decoration: none;
 }
@@ -277,24 +272,23 @@
       <button>create</button>
       <p class="message">Already registered? <a href="#">Sign In</a></p>
     </form>
-    <form class="login-form">
       <input type="text" placeholder="Username or Email" id="login_field">
-      <input type="password" placeholder="Password" id="login-password">
-      <button>login</button>
+      <input type="password" placeholder="Password" id="login_password">
+      <button onclick="userLogin()">login</button>
       <p class="message">Not registered? <a href="#">Create an account</a></p>
-    </form>
     <div class="social-wrap a">
         <button id="facebook" onclick="checkFbLoginState()">Sign in with Facebook</button>
     </div>
   </div>
 </div>
-<div class="hideElement">
+<div class="hideElement" id="logged-in-details">
 <p>Your JWT is <span id="jwt"></span> </p>
-    <button class="btn"> Verify Token</button>
-    <button class="btn"> Refresh Token</button>
-    <button class="btn"> Invalidate All Tokens</button>
+    <button class="btn" onclick="verifyToken()"> Verify Token</button>
+    <button class="btn" onclick="refreshToken()"> Refresh Token</button>
+    <button class="btn" onclick="invalidateAllTokens()"> Invalidate All Tokens</button>
 </div>
 <script>
+    var jwt;
   function statusFbCallback(response) {
     if (response.status === 'connected') {
       FBEasyAuth(response.authResponse.accessToken)
@@ -336,7 +330,10 @@ function fbLogin(){
                 xhr.setRequestHeader("X-CSRFToken", "{{ csrf_token }}");
             },
             success: function (data) {
-                alert("Logged into facebook")
+                jwt=data.token;
+                $("#jwt").text(data.token);
+                $("#login-page").addClass("hideElement");
+                $("#logged-in-details").removeClass("hideElement");
             },
             error: function (data){
                 alert("There was an error, please try again.")
@@ -344,6 +341,101 @@ function fbLogin(){
             }
             });
 }
+    function userLogin(){
+        var login_field = $("#login_field").val();
+        if(!login_field){
+            alert("Please put in the username/email");
+            return;
+        }
+        var password = $("#login_password").val()
+        if(!password){
+            alert("Please put in the password");
+            return;
+        }
+        var dat = { login_field:login_field, password: password };
+        $.ajax({
+            type: "POST",
+            contentType: "application/json; charset=utf-8",
+            url: "/easy-auth/api-token-auth/",
+            data: JSON.stringify(dat),
+            dataType: "json",
+            beforeSend: function(xhr){
+                xhr.setRequestHeader("X-CSRFToken", "{{ csrf_token }}");
+            },
+            success: function (data) {
+                jwt=data.token;
+                $("#jwt").text(data.token);
+                $("#login-page").addClass("hideElement");
+                $("#logged-in-details").removeClass("hideElement");
+            },
+            error: function (data){
+                alert("There was an error, please try again.")
+
+            }
+            });
+    }
+    function verifyToken(){
+        var dat = { token:jwt};
+        $.ajax({
+            type: "POST",
+            contentType: "application/json; charset=utf-8",
+            url: "/easy-auth/api-token-verify/",
+            data: JSON.stringify(dat),
+            dataType: "json",
+            beforeSend: function(xhr){
+                xhr.setRequestHeader("X-CSRFToken", "{{ csrf_token }}");
+            },
+            success: function (data) {
+                alert("Success");
+            },
+            error: function (data){
+                alert("Invalid Token");
+
+            }
+            });
+    }
+    function refreshToken(){
+        var dat = { token:jwt};
+        $.ajax({
+            type: "POST",
+            contentType: "application/json; charset=utf-8",
+            url: "/easy-auth/api-token-refresh/",
+            data: JSON.stringify(dat),
+            dataType: "json",
+            beforeSend: function(xhr){
+                xhr.setRequestHeader("X-CSRFToken", "{{ csrf_token }}");
+            },
+            success: function (data) {
+                jwt = data.token;
+                $("#jwt").text(jwt);
+                alert("Success");
+            },
+            error: function (data){
+                alert("Invalid Token " + data.responseText);
+
+            }
+            });
+    }
+    function invalidateAllTokens(){
+        var dat = { };
+        $.ajax({
+            type: "POST",
+            contentType: "application/json; charset=utf-8",
+            url: "/easy-auth/invalidate-all-tokens/",
+            data: JSON.stringify(dat),
+            dataType: "json",
+            beforeSend: function(xhr){
+                xhr.setRequestHeader("X-CSRFToken", "{{ csrf_token }}");
+            },
+            success: function (data) {
+                alert("Success");
+            },
+            error: function (data){
+                alert("There was an error please try again");
+
+            }
+            });
+    }
   window.fbAsyncInit = function() {
   FB.init({
     appId      : '953976284710965',
