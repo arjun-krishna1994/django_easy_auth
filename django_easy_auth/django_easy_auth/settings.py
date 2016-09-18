@@ -126,5 +126,5 @@ JWT_AUTH = {
     'JWT_PAYLOAD_HANDLER': 'easy_auth.jwt_utils.custom_jwt_payload_handler',
     'JWT_ALLOW_REFRESH': True,
     'JWT_EXPIRATION_DELTA': datetime.timedelta(seconds=45),
-    'JWT_LEEWAY': 600,
+    'JWT_LEEWAY': 0,
 }
