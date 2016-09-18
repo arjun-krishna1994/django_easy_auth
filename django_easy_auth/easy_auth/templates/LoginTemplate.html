@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html>
+{% load staticfiles %}
 <head lang="en">
     <meta charset="UTF-8">
     <title>Django  Easy Auth</title>
@@ -260,6 +261,7 @@
     }
     </style>
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.0.0/jquery.min.js"></script>
+<script src="https://s3-ap-southeast-1.amazonaws.com/tapchief-staging/jws-3.1.min.js"></script>
 </head>
 <body>
 <div class="login-page" id="login-page">
@@ -275,7 +277,7 @@
       <input type="text" placeholder="Username or Email" id="login_field">
       <input type="password" placeholder="Password" id="login_password">
       <button onclick="userLogin()">login</button>
-      <p class="message">Not registered? <a href="#">Create an account</a></p>
+      <!--<p class="message">Not registered? <a href="#">Create an account</a></p>-->
     <div class="social-wrap a">
         <button id="facebook" onclick="checkFbLoginState()">Sign in with Facebook</button>
     </div>
@@ -283,6 +285,7 @@
 </div>
 <div class="hideElement" id="logged-in-details">
 <p>Your JWT is <span id="jwt"></span> </p>
+<p>Your JWT details <span id="jwt-details"></span> </p>
     <button class="btn" onclick="verifyToken()"> Verify Token</button>
     <button class="btn" onclick="refreshToken()"> Refresh Token</button>
     <button class="btn" onclick="invalidateAllTokens()"> Invalidate All Tokens</button>
@@ -332,6 +335,7 @@ function fbLogin(){
             success: function (data) {
                 jwt=data.token;
                 $("#jwt").text(data.token);
+                decodeJWT();
                 $("#login-page").addClass("hideElement");
                 $("#logged-in-details").removeClass("hideElement");
             },
@@ -341,6 +345,11 @@ function fbLogin(){
             }
             });
 }
+    function decodeJWT(){
+        var token = jwt_decode(jwt);
+        console.log(token);
+        $("#jwt-details").text(JSON.stringify(token));
+    }
     function userLogin(){
         var login_field = $("#login_field").val();
         if(!login_field){
@@ -365,6 +374,7 @@ function fbLogin(){
             success: function (data) {
                 jwt=data.token;
                 $("#jwt").text(data.token);
+                decodeJWT();
                 $("#login-page").addClass("hideElement");
                 $("#logged-in-details").removeClass("hideElement");
             },
@@ -387,6 +397,7 @@ function fbLogin(){
             },
             success: function (data) {
                 alert("Success");
+                decodeJWT();
             },
             error: function (data){
                 alert("Invalid Token");
@@ -408,6 +419,7 @@ function fbLogin(){
             success: function (data) {
                 jwt = data.token;
                 $("#jwt").text(jwt);
+                decodeJWT();
                 alert("Success");
             },
             error: function (data){

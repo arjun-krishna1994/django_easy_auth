@@ -125,6 +125,6 @@ EASY_AUTH_JWT_HEADER = 'HTTP_JWTOKEN'
 JWT_AUTH = {
     'JWT_PAYLOAD_HANDLER': 'easy_auth.jwt_utils.custom_jwt_payload_handler',
     'JWT_ALLOW_REFRESH': True,
-    'JWT_EXPIRATION_DELTA': datetime.timedelta(days=1),
+    'JWT_EXPIRATION_DELTA': datetime.timedelta(seconds=45),
     'JWT_LEEWAY': 600,
 }
