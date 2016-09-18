@@ -11,6 +11,9 @@ import utils, models
 from .import jwt_utils
 from rest_framework_jwt.views import JSONWebTokenAPIView
 from .serializers import RefreshJWTSerializer, VerifyJWTSerializer
+from django.http.response import HttpResponse
+from django.template.context import RequestContext
+from django.template.loader import get_template
 
 
 #TODO: Convert this function into a class based view
@@ -106,6 +109,10 @@ def facebook_auth(request):
     return Response({"token": token, "sign_up": signup}, status=status.HTTP_200_OK)
 
 
+def view_login_page(request):
+    t = get_template('LoginTemplate.html')
+    c = RequestContext(request, {})
+    return HttpResponse(t.render(c))
 
 refresh_jwt_token = RefreshTokenAPIView.as_view()
 verify_jwt_token = VerifyTokenAPIView.as_view()

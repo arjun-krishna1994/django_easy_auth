@@ -1,0 +1,365 @@
+<!DOCTYPE html>
+<html>
+<head lang="en">
+    <meta charset="UTF-8">
+    <title>Django  Easy Auth</title>
+    <style>
+        @import url(https://fonts.googleapis.com/css?family=Roboto:300);
+
+        .login-page {
+          width: 360px;
+          padding: 8% 0 0;
+          margin: auto;
+        }
+        .form {
+          position: relative;
+          z-index: 1;
+          background: #FFFFFF;
+          max-width: 360px;
+          margin: 0 auto 100px;
+          padding: 45px;
+          text-align: center;
+          box-shadow: 0 0 20px 0 rgba(0, 0, 0, 0.2), 0 5px 5px 0 rgba(0, 0, 0, 0.24);
+        }
+        .form input {
+          font-family: "Roboto", sans-serif;
+          outline: 0;
+          background: #f2f2f2;
+          width: 100%;
+          border: 0;
+          margin: 0 0 15px;
+          padding: 15px;
+          box-sizing: border-box;
+          font-size: 14px;
+        }
+        .form button {
+          font-family: "Roboto", sans-serif;
+          text-transform: uppercase;
+          outline: 0;
+          background: #4CAF50;
+          width: 100%;
+          border: 0;
+          padding: 15px;
+          color: #FFFFFF;
+          font-size: 14px;
+          -webkit-transition: all 0.3 ease;
+          transition: all 0.3 ease;
+          cursor: pointer;
+        }
+        .form button:hover,.form button:active,.form button:focus {
+          background: #43A047;
+        }
+        .form .message {
+          margin: 15px 0 0;
+          color: #b3b3b3;
+          font-size: 12px;
+        }
+        .form .message a {
+          color: #4CAF50;
+          text-decoration: none;
+        }
+        .form .register-form {
+          display: none;
+        }
+        .container {
+          position: relative;
+          z-index: 1;
+          max-width: 300px;
+          margin: 0 auto;
+        }
+        .container:before, .container:after {
+          content: "";
+          display: block;
+          clear: both;
+        }
+        .container .info {
+          margin: 50px auto;
+          text-align: center;
+        }
+        .container .info h1 {
+          margin: 0 0 15px;
+          padding: 0;
+          font-size: 36px;
+          font-weight: 300;
+          color: #1a1a1a;
+        }
+        .container .info span {
+          color: #4d4d4d;
+          font-size: 12px;
+        }
+        .container .info span a {
+          color: #000000;
+          text-decoration: none;
+        }
+        .container .info span .fa {
+          color: #EF3B3A;
+        }
+        body {
+          background: #76b852; /* fallback for old browsers */
+          background: -webkit-linear-gradient(right, #76b852, #8DC26F);
+          background: -moz-linear-gradient(right, #76b852, #8DC26F);
+          background: -o-linear-gradient(right, #76b852, #8DC26F);
+          background: linear-gradient(to left, #76b852, #8DC26F);
+          font-family: "Roboto", sans-serif;
+          -webkit-font-smoothing: antialiased;
+          -moz-osx-font-smoothing: grayscale;
+        }
+        .hideElement{
+            display:none;
+        }
+.btn {
+  background: #73ff00;
+  background-image: -webkit-linear-gradient(top, #73ff00, #a9bd71);
+  background-image: -moz-linear-gradient(top, #73ff00, #a9bd71);
+  background-image: -ms-linear-gradient(top, #73ff00, #a9bd71);
+  background-image: -o-linear-gradient(top, #73ff00, #a9bd71);
+  background-image: linear-gradient(to bottom, #73ff00, #a9bd71);
+  -webkit-border-radius: 28;
+  -moz-border-radius: 28;
+  border-radius: 28px;
+  font-family: Arial;
+  color: #ffffff;
+  font-size: 20px;
+  padding: 10px 20px 10px 20px;
+  text-decoration: none;
+}
+
+.btn:hover {
+  background: #3cb0fd;
+  background-image: -webkit-linear-gradient(top, #3cb0fd, #3498db);
+  background-image: -moz-linear-gradient(top, #3cb0fd, #3498db);
+  background-image: -ms-linear-gradient(top, #3cb0fd, #3498db);
+  background-image: -o-linear-gradient(top, #3cb0fd, #3498db);
+  background-image: linear-gradient(to bottom, #3cb0fd, #3498db);
+  text-decoration: none;
+}
+    @import "compass/css3";
+
+    @import url(http://fonts.googleapis.com/css?family=Merriweather+Sans);
+     div.social-wrap button {
+        height: 35px;
+        background: none;
+        border: none;
+        display: block;
+        background-size: 35px 35px;
+        background-position: right center;
+        background-repeat: no-repeat;
+        border-radius: 4px;
+        color: white;
+        font-family:"Merriweather Sans", sans-serif;
+        font-size: 14px;
+        margin-bottom: 15px;
+        margin-top: 15px;
+        width: 265px;
+        border-bottom: 2px solid transparent;
+        border-left: 1px solid transparent;
+        border-right: 1px solid transparent;
+        box-shadow: 0 4px 2px -2px gray;
+        text-shadow: rgba(0, 0, 0, .5) -1px -1px 0;
+    }
+    button#facebook {
+        border-color: #2d5073;
+        background-color: #3b5998;
+        background-image: url(http://icons.iconarchive.com/icons/danleech/simple/512/facebook-icon.png);
+    }
+    div.social-wrap button:active {
+        background-color: #222;
+    }
+    div.social-wrap.b button {
+        padding-right: 45px;
+        height: 35px;
+        background: none;
+        border: none;
+        display: block;
+        background-size: 25px 25px, cover;
+        background-position: 170px center, center center;
+        background-repeat: no-repeat, repeat;
+        border-radius: 4px;
+        color: white;
+        font-family:"Merriweather Sans", sans-serif;
+        font-size: 14px;
+        margin-bottom: 15px;
+        width: 205px;
+        border-bottom: 2px solid transparent;
+        border-left: 1px solid transparent;
+        border-right: 1px solid transparent;
+        box-shadow: 0 4px 2px -2px gray;
+        text-shadow: rgba(0, 0, 0, .4) -1px -1px 0;
+    }
+    div.social-wrap.b {
+    }
+    div.social-wrap.b > .facebook {
+        background: url(http://aroosamanzar.com/uploads/images/facebook-logo-png-white-i6.png), -webkit-gradient(linear, left top, left bottom, color-stop(0%, #4c74c4), color-stop(100%, #3b5998));
+        background-size: 25px 25px, cover;
+        background-position: 170px center, center center;
+        background-repeat: no-repeat, repeat;
+    }
+    div.social-wrap.b button em {
+        font-size: 18px;
+        letter-spacing: 1px;
+        font-family:"Times New Roman";
+        margin-right: 4px;
+        margin-left: 4px;
+    }
+    div.social-wrap.c button {
+        padding-left: 35px;
+        padding-right: 0px;
+        height: 35px;
+        background: none;
+        border: none;
+        display: block;
+        background-size: 25px 25px, cover;
+        background-position: 10px center, center center;
+        background-repeat: no-repeat, repeat;
+        border-radius: 4px;
+        color: white;
+        font-family:"Merriweather Sans", sans-serif;
+        font-size: 14px;
+        margin-bottom: 15px;
+        width: 205px;
+        border-bottom: 2px solid transparent;
+        border-left: 1px solid transparent;
+        border-right: 1px solid transparent;
+        box-shadow: 0 4px 2px -2px gray;
+        text-shadow: rgba(0, 0, 0, .4) -1px -1px 0;
+    }
+    div.social-wrap.c {
+    }
+    div.social-wrap.c > .facebook {
+        background: url(http://aroosamanzar.com/uploads/images/facebook-logo-png-white-i6.png), -webkit-gradient(linear, left top, left bottom, color-stop(0%, #4c74c4), color-stop(100%, #3b5998));
+        background-size: 25px 25px, cover;
+        background-position: 10px center, center center;
+        background-repeat: no-repeat, repeat;
+    }
+    div.social-wrap.c button em {
+        font-size: 18px;
+        letter-spacing: 1px;
+        font-family:"Times New Roman";
+        margin-right: 4px;
+        margin-left: 4px;
+    }
+    ul.sm-wrap {
+        list-style-type: none;
+        padding: 0px;
+    }
+    ul.sm-wrap li {
+        font-family:"Helvetica", sans-serif;
+        font-size: 11px;
+        margin-bottom: 10px;
+        padding-left: 20px;
+        background-size: auto 100%;
+        background-repeat: no-repeat;
+    }
+    ul.sm-wrap li#facebook-sm {
+        background-image: url(http://icons.iconarchive.com/icons/danleech/simple/512/facebook-icon.png);
+    }
+    ul.sm-wrap li#twitter-sm {
+        background-image:url(https://g.twimg.com/Twitter_logo_blue.png);
+    }
+    ul.sm-wrap li#gplus-sm {
+        background-image: url(https://lh3.googleusercontent.com/-IMGb4CkWC98/VeXR6rWlM1I/AAAAAAAA7c4/aC-I28R6_psCNtxmIXAtNuMja5wCYUR9A/w1664-h1664/GooglePlus-logos-02.png);
+    }
+
+    ul.sm-wrap a{
+        text-decoration: none;
+    }
+    </style>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/2.0.0/jquery.min.js"></script>
+</head>
+<body>
+<div class="login-page" id="login-page">
+    <h1 style="padding-left: 20px"> Welcome to Easy Auth</h1>
+  <div class="form">
+    <form class="register-form">
+      <input type="text" placeholder="name"/>
+      <input type="password" placeholder="password"/>
+      <input type="text" placeholder="email address"/>
+      <button>create</button>
+      <p class="message">Already registered? <a href="#">Sign In</a></p>
+    </form>
+    <form class="login-form">
+      <input type="text" placeholder="Username or Email" id="login_field">
+      <input type="password" placeholder="Password" id="login-password">
+      <button>login</button>
+      <p class="message">Not registered? <a href="#">Create an account</a></p>
+    </form>
+    <div class="social-wrap a">
+        <button id="facebook" onclick="checkFbLoginState()">Sign in with Facebook</button>
+    </div>
+  </div>
+</div>
+<div class="hideElement">
+<p>Your JWT is <span id="jwt"></span> </p>
+    <button class="btn"> Verify Token</button>
+    <button class="btn"> Refresh Token</button>
+    <button class="btn"> Invalidate All Tokens</button>
+</div>
+<script>
+  function statusFbCallback(response) {
+    if (response.status === 'connected') {
+      FBEasyAuth(response.authResponse.accessToken)
+    } else if (response.status === 'not_authorized') {
+        fbLogin()
+
+    } else {
+        fbLogin()
+    }
+  }
+
+
+  function checkFbLoginState() {
+    FB.getLoginStatus(function(response) {
+      statusFbCallback(response);
+    });
+  }
+
+function fbLogin(){
+  FB.login(function(response) {
+  if (response.status === 'connected') {
+    FBEasyAuth(response.authResponse.accessToken)
+  } else if (response.status === 'not_authorized') {
+    console.log('Failed to login to Tapchief on fb')
+  } else {
+    console.log('FB login returned unknown')
+  }
+}, {scope: 'public_profile,email'});
+}
+  function FBEasyAuth(token) {
+    var dat = { access_token:token };
+        $.ajax({
+            type: "POST",
+            contentType: "application/json; charset=utf-8",
+            url: "/easy-auth/api-facebook-auth/",
+            data: JSON.stringify(dat),
+            dataType: "json",
+            beforeSend: function(xhr){
+                xhr.setRequestHeader("X-CSRFToken", "{{ csrf_token }}");
+            },
+            success: function (data) {
+                alert("Logged into facebook")
+            },
+            error: function (data){
+                alert("There was an error, please try again.")
+
+            }
+            });
+}
+  window.fbAsyncInit = function() {
+  FB.init({
+    appId      : '953976284710965',
+    cookie     : true,
+    xfbml      : true,
+    version    : 'v2.5'
+  });
+  };
+      // Load the SDK asynchronously
+  (function(d, s, id) {
+    var js, fjs = d.getElementsByTagName(s)[0];
+    if (d.getElementById(id)) return;
+    js = d.createElement(s); js.id = id;
+    js.src = "//connect.facebook.net/en_US/sdk.js";
+    fjs.parentNode.insertBefore(js, fjs);
+  }(document, 'script', 'facebook-jssdk'));
+</script>
+</body>
+</html>
